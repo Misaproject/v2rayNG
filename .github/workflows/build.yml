@@ -86,7 +86,7 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
-          - name: Generate Keystore
+      - name: Generate Keystore
         id: android_keystore
         run: |
           keytool -genkeypair -v -keystore android_keystore.jks -alias v2misa -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=V2Misa, OU=Mobile, O=V2Misa, L=World, S=World, C=US"
