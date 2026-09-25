@@ -87,15 +87,21 @@ jobs:
         java-version: '21'
 
     - name: Generate Keystore
-      run: keytool -genkeypair -v -keystore android_keystore.jks -alias v2misa -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=V2Misa"
+      run: |
+        keytool -genkeypair -v -keystore ${{ github.workspace }}/android_keystore.jks -alias v2misa -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=V2Misa, OU=Mobile, O=V2Misa, L=World, S=World, C=US"
 
     - name: Build APK
       env:
-        KEYSTORE_FILE: android_keystore.jks
-        KEYSTORE_PASSWORD: 123456
-        KEY_ALIAS: v2misa
-        KEY_PASSWORD: 123456
-        
+        KEYSTORE_FILE: ${{ github.workspace }}/android_keystore.jks
+        KEYSTORE_PASSWORD: "123456"
+        KEY_ALIAS: "v2misa"
+        KEY_PASSWORD: "123456"
+      run: |
+        pushd V2rayNG
+        chmod +x ./gradlew
+        ./gradlew assembleRelease
+        popd
+
     - name: Upload arm64-v8a APK
       uses: actions/upload-artifact@v7
       if: ${{  success() }}
@@ -126,7 +132,7 @@ jobs:
 
   sign-and-release:
     needs: build
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && inputs.release_tag != ''
 
     steps:
