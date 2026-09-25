@@ -97,7 +97,7 @@ jobs:
           KEYSTORE_FILE: ${{ steps.android_keystore.outputs.filePath }}
           KEYSTORE_PASSWORD: "123456"
           KEY_ALIAS: "v2misa"
-          KEY_PASSWORD: "123456"
+          KEY_PASSWORD: "123456" }}
     
     - name: Upload arm64-v8a APK
       uses: actions/upload-artifact@v7
