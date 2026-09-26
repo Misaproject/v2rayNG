@@ -99,6 +99,9 @@ jobs:
       run: |
         pushd V2rayNG
         chmod +x ./gradlew
+        ./gradlew assembleRelease      run: |
+        pushd V2rayNG
+        chmod +x ./gradlew
         ./gradlew assembleRelease
         popd
 
