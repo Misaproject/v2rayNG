@@ -99,12 +99,17 @@ jobs:
       run: |
         pushd V2rayNG
         chmod +x ./gradlew
-        ./gradlew assembleRelease      run: |
-        pushd V2rayNG
-        chmod +x ./gradlew
         ./gradlew assembleRelease
         popd
-        find ${{ github.workspace }}/V2rayNG/app/build/outputs/apk -name "*.apk" -exec $ANDROID_HOME/build-tools/37.0.0/apksigner sign --ks ${{ github.workspace }}/android_keystore.jks --ks-pass pass:123456 --ks-key-alias v2misa --key-pass pass:123456 {} +
+
+        APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | sort -V | tail -n 1)
+        echo "Using apksigner: $APKSIGNER"
+
+        find ${{ github.workspace }}/V2rayNG/app/build/outputs/apk -name "*.apk" | while read -r apk; do
+          echo "Signing: $apk"
+          $APKSIGNER sign --ks ${{ github.workspace }}/android_keystore.jks --ks-pass pass:123456 --ks-key-alias v2misa --key-pass pass:123456 "$apk"
+          $APKSIGNER verify "$apk"
+        done
 
     - name: Upload arm64-v8a APK
       uses: actions/upload-artifact@v7
